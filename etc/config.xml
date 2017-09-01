@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <cadence_pinterest>
+            <visitor>
+                <enable>0</enable>
+            </visitor>
+            <conversion>
+                <enable>0</enable>
+            </conversion>
+        </cadence_pinterest>
+    </default>
+</config>

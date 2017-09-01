@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="cadence" translate="label" sortOrder="500">
+            <label>Cadence</label>
+        </tab>
+        <section id="cadence_pinterest"  translate="label" type="text" sortOrder="3000" showInDefault="1" showInWebsite="1" showInStore="1" >
+            <class>separator-top</class>
+            <label>Pinterest Pixel</label>
+            <tab>cadence</tab>
+            <resource>Cadence_Pinterest::config_cadence_pinterest</resource>
+            <group id="visitor" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Visitor Pixel</label>
+                <field id="enabled" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="pixel_id" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Pixel ID</label>
+                    <comment>This is the pixelId for the facebook pixel (see the install guide for instructions on where to find this).</comment>
+                </field>
+            </group>
+            <group id="conversion" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Conversion Event (Optional)</label>
+                <field id="enabled" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>The base pixel must be enabled to track conversions. Includes parameters for grand total and currency.</comment>
+                </field>
+            </group>
+            <group id="add_to_cart" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Add To Cart (Optional)</label>
+                <field id="enabled" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>The base pixel must be enabled to track addToCart. Includes parameters for all product SKU's added, the total value for added products, and currency.</comment>
+                </field>
+            </group>
+            <group id="add_to_wishlist" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Add To Wishlist (Optional)</label>
+                <field id="enabled" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>The base pixel must be enabled to track addToWishlist. Includes parameters for the product sku added, price of product, and currency.</comment>
+                </field>
+            </group>
+            <group id="inititiate_checkout" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Initiate Checkout (Optional)</label>
+                <field id="enabled" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>The base pixel must be enabled to track initiateCheckout. Includes no parameters</comment>
+                </field>
+            </group>
+            <group id="view_product" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>View Product (Optional)</label>
+                <field id="enabled" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>The base pixel must be enabled to track viewProduct. Includes parameters for product price, product name, product sku, and currency</comment>
+                </field>
+            </group>
+            <group id="search" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Search (Optional)</label>
+                <field id="enabled" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>The base pixel must be enabled to track search. Includes a parameter for the search string.</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
