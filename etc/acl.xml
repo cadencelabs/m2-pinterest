@@ -7,7 +7,7 @@
                     <resource id="Magento_Backend::stores_settings">
                         <resource id="Magento_Config::config">
                             <!-- this resource id we can use in system.xml for section -->
-                            <resource id="Cadence_Pinterest::config_cadence_pinterest" title="Cadence Labs Facebook Pixel" sortOrder="90" />
+                            <resource id="Cadence_Pinterest::config_cadence_pinterest" title="Cadence Labs Pinterest Tag" sortOrder="90" />
                         </resource>
                     </resource>
                 </resource>

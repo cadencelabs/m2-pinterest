@@ -1,7 +1,6 @@
 <?php
 /** @var Cadence\Pinterest\Block\AbstractBlock $block */
 $helper = $block->getHelper();
-
 if (!$helper->isConversionPixelEnabled()) {
 	return;
 }
@@ -18,19 +17,20 @@ if (!$order) {
 
 $grand_total = round($order->getGrandTotal(), 2);
 $currency_code = $block->getCurrencyCode();
-$orderIds = $helper->getOrderIDs();
-$numItems = $helper->getOrderItemsCount();
+$qtyOrdered = $helper->getOrderItemsQty();
+$orderItemJson = $helper->getOrderItemsJson();
 ?>
-<!-- Facebook Conversion Code for Conversions -->
+<!-- Pinterest Conversion Code for Conversions -->
 <script>
-    fbq('track','Purchase', {
+    pintrk('track','checkout', {
         value: <?php echo $grand_total ?>,
         currency: '<?php echo $currency_code ?>',
-        content_ids: <?php echo $orderIds ?>,
-        content_type: 'product',
-        num_items: <?php echo $numItems; ?>
+        order_quantity: <?php echo $qtyOrdered; ?>,
+        line_items: <?php echo $orderItemJson ?>
     });
 </script>
-<noscript><img height="1" width="1" style="display:none"
-               src="https://www.facebook.com/tr?id=<?php echo $id ?>&ev=Purchase&cd[value]=<?php echo $grand_total ?>&cd[currency]=<?php echo $currency_code ?>&cd[num_items]=<?php echo $numItems ?>&noscript=1"
-    /></noscript>
+<noscript>
+<img height="1" width="1" style="display:none;" alt=""
+     src="https://ct.pinterest.com/v3/?tid=<?php echo $id ?>&event=checkout&ed[value]=<?php echo $grand_total ?>&ed[order_quantity]=<?php echo $qtyOrdered
+     ?>&ed[currency]=<?php echo $currency_code ?>&noscript=1"/>
+</noscript>

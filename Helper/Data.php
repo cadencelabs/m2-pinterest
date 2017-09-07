@@ -23,8 +23,8 @@ class Data extends AbstractHelper{
 	protected $_productRepository;
 	/** @var \Magento\Store\Model\StoreManagerInterface $_storeManager */
 	protected $_storeManager;
-	/** @var \Cadence\Pinterest\Model\Session $_fbPixelSession */
-	protected $_fbPixelSession;
+	/** @var \Cadence\Pinterest\Model\Session $_pinterestSession */
+	protected $_pinterestSession;
 
 	public function __construct(
 		\Magento\Checkout\Model\Session $checkoutSession,
@@ -32,14 +32,14 @@ class Data extends AbstractHelper{
 		\Magento\Catalog\Model\ProductRepository $productRepository,
 		\Magento\Store\Model\StoreManagerInterface $storeManager,
 		\Magento\Framework\App\Helper\Context $context,
-		\Cadence\Pinterest\Model\Session $fbPixelSession
+		\Cadence\Pinterest\Model\Session $_pinterestSession
 	) {
 		$this->_checkoutSession = $checkoutSession;
 		$this->_orderFactory = $orderFactory;
 		$this->_scopeConfig = $context->getScopeConfig();
 		$this->_productRepository = $productRepository;
 		$this->_storeManager = $storeManager;
-		$this->_fbPixelSession = $fbPixelSession;
+		$this->_pinterestSession = $_pinterestSession;
 
 		parent::__construct( $context );
 	}
@@ -58,26 +58,6 @@ class Data extends AbstractHelper{
 		return $this->_scopeConfig->getValue("cadence_pinterest/add_to_cart/enabled");
 	}
 
-	public function isAddToWishlistPixelEnabled()
-	{
-		return $this->_scopeConfig->getValue('cadence_pinterest/add_to_wishlist/enabled');
-	}
-
-	public function isInitiateCheckoutPixelEnabled()
-	{
-		return $this->_scopeConfig->getValue('cadence_pinterest/inititiate_checkout/enabled');
-	}
-
-	public function isViewProductPixelEnabled()
-	{
-		return $this->_scopeConfig->getValue('cadence_pinterest/view_product/enabled');
-	}
-
-	public function isSearchPixelEnabled()
-	{
-		return $this->_scopeConfig->getValue('cadence_pinterest/search/enabled');
-	}
-
 	public function getVisitorPixelId()
 	{
 		return $this->_scopeConfig->getValue("cadence_pinterest/visitor/pixel_id");
@@ -90,18 +70,18 @@ class Data extends AbstractHelper{
 	 */
 	public function getPixelHtml($event, $data = false)
 	{
-		$json = '';
-		if ($data) {
-			$json = ', ' . json_encode($data);
-		}
-		$html = <<<HTML
-    <!-- Begin Facebook {$event} Pixel -->
+        $json = '';
+        if ($data) {
+            $json = ', ' . json_encode($data);
+        }
+        $html = <<<HTML
+    <!-- Begin Pinterest {$event} -->
     <script type="text/javascript">
-        fbq('track', '{$event}'{$json});
+        pintrk('track', '{$event}'{$json});
     </script>
-    <!-- End Facebook {$event} Pixel -->
+    <!-- End Pinterest {$event} -->
 HTML;
-		return $html;
+        return $html;
 	}
 
 	public function getOrderIDs()
@@ -136,46 +116,76 @@ HTML;
 		}
 	}
 
-	protected function _getProductIDs($product)
-	{
-		/** @var \Magento\Catalog\Model\Product $product */
-		$group = $product->getTypeInstance()->setProduct($product);
-		/** @var \Magento\GroupedProduct\Model\Product\Type\Grouped $group */
-		$group_collection = $group->getAssociatedProductCollection($product);
-		$ids = array();
-
-		foreach ($group_collection as $group_product) {
-
-			$ids[] = $this->_getProductID($group_product);
-		}
-
-		return $ids;
-	}
-
 	protected function _getProductID($product)
 	{
 		return array(
 			$product->getSku()
 		);
 	}
+    
+    protected function _getProductIDs($product)
+    {
+        /** @var \Magento\Catalog\Model\Product $product */
+        $group = $product->getTypeInstance()->setProduct($product);
+        /** @var \Magento\GroupedProduct\Model\Product\Type\Grouped $group */
+        $group_collection = $group->getAssociatedProductCollection($product);
+        $ids = array();
 
-	public function getOrderItemsCount()
-	{
-		$order = $this->getOrder();
-		$qty = 0;
-		/** @var \Magento\Sales\Model\Order\Item $item */
-		foreach($order->getAllVisibleItems() as $item) {
-			// Get a whole number
-			$qty += round($item->getQtyOrdered());
-		}
-		return $qty;
-	}
+        foreach ($group_collection as $group_product) {
+
+            $ids[] = $this->_getProductID($group_product);
+        }
+
+        return $ids;
+    }
 
 	public function getCurrencyCode(){
 		return $this->_storeManager->getStore()->getCurrentCurrency()->getCode();
 	}
 
 	public function getSession(){
-		return $this->_fbPixelSession;
+		return $this->_pinterestSession;
 	}
+
+	public function getTagId()
+    {
+        return $this->_scopeConfig->getValue("cadence_pinterest/visitor/tag_id");
+    }
+    
+    public function getOrderItemsQty()
+    {
+        $order = $this->_order;
+
+        $qty = 0;
+
+        /** @var Mage_Sales_Model_Order_Item $item */
+        foreach($order->getAllVisibleItems() as $item) {
+            $qty += $item->getQtyOrdered();
+        }
+
+        return max(round($qty), 1);
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrderItemsJson()
+    {
+        $order = $this->_order;
+
+        $itemData = array();
+
+        /** @var Mage_Sales_Model_Order_Item $item */
+        foreach($order->getAllVisibleItems() as $item) {
+            $qty = max(round($item->getQtyOrdered()), 1);
+            $itemData[] = [
+                "product_name" => $item->getName(),
+                "product_id" => $item->getSku(),
+                "product_price" => round($item->getPrice(),2),
+                "product_quantity" => $qty
+            ];
+        }
+
+        return json_encode($itemData);
+    }
 }
