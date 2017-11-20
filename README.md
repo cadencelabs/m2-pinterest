@@ -10,10 +10,10 @@ Provides line-item detail for audience building.
 
 ### License
 
-GPL 3.0
+GNU GPL 3.0
 
 ### More Info
 
-For user guide & full details see: https://www.cadence-labs.com/
+For user guide & full details see: https://www.cadence-labs.com/2017/09/free-pinterest-tag-extension-magento-2/
 
 
