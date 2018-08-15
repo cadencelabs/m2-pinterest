@@ -1,7 +1,27 @@
 <?php
 /** @var Cadence\Pinterest\Block\AbstractBlock $block */
 $helper = $block->getHelper();
-$session = $block->getSession();
-if ($helper->isAddToCartPixelEnabled() && $session->hasAddToCart()) {
-    echo $helper->getPixelHtml('AddToCart', $session->getAddToCart());
-}
+?>
+<?php if($helper->isAddToCartPixelEnabled()): // only event we're tracking at the moment (other than conversion) ?>
+<script type="text/javascript">
+require([
+    'jquery',
+    'Magento_Customer/js/customer-data',
+    'ko'
+], function($, customerData) {
+    $(document).ready(function(){
+        customerData.get('cadence-pinterest-fpc').subscribe(function(loadedData){
+            if (loadedData && "undefined" !== typeof loadedData.events) {
+                for (var eventCounter = 0; eventCounter < loadedData.events.length; eventCounter++) {
+                    var eventData = loadedData.events[eventCounter];
+                    if ("undefined" !== typeof eventData.eventAdditional && eventData.eventAdditional) {
+                        pintrk('track', eventData.eventName, eventData.eventAdditional || {});
+                    }
+                }
+                customerData.set('cadence-pinterest-fpc', {});
+            }
+        });
+    });
+});
+</script>
+<?php endif; ?>

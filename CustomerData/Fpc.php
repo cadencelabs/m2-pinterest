@@ -40,7 +40,7 @@ class Fpc implements SectionSourceInterface
             'events' => []
         ];
 
-        if ($this->_helper->getSession()->hasAddToCart()) {
+        if ($this->_helper->isAddToCartPixelEnabled() && $this->_helper->getSession()->hasAddToCart()) {
             // Get the add-to-cart information since it's unique to the user
             // but might be displayed on a cached page
             $data['events'][] = [

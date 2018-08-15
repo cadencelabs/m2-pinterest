@@ -13,8 +13,6 @@ class Data extends AbstractHelper{
 
 	/** @var \Magento\Checkout\Model\Session $_checkoutSession */
 	protected $_checkoutSession;
-	/** @var \Magento\Sales\Model\OrderFactory $_orderFactory */
-	protected $_orderFactory;
 	/** @var ScopeConfigInterface $_scopeConfig */
 	protected $_scopeConfig;
 	/** @var \Magento\Sales\Model\Order $_order */
@@ -25,21 +23,25 @@ class Data extends AbstractHelper{
 	protected $_storeManager;
 	/** @var \Cadence\Pinterest\Model\Session $_pinterestSession */
 	protected $_pinterestSession;
+    /** @var \Magento\Framework\App\Http\Context $_httpContext */
+    protected $_httpContext;
 
 	public function __construct(
 		\Magento\Checkout\Model\Session $checkoutSession,
+		\Magento\Customer\Model\Session $customerSession,
 		\Magento\Sales\Model\OrderFactory $orderFactory,
 		\Magento\Catalog\Model\ProductRepository $productRepository,
 		\Magento\Store\Model\StoreManagerInterface $storeManager,
 		\Magento\Framework\App\Helper\Context $context,
-		\Cadence\Pinterest\Model\Session $_pinterestSession
+		\Cadence\Pinterest\Model\Session $_pinterestSession,
+		\Magento\Framework\App\Http\Context $httpContext
 	) {
 		$this->_checkoutSession = $checkoutSession;
-		$this->_orderFactory = $orderFactory;
 		$this->_scopeConfig = $context->getScopeConfig();
 		$this->_productRepository = $productRepository;
 		$this->_storeManager = $storeManager;
 		$this->_pinterestSession = $_pinterestSession;
+        $this->_httpContext = $httpContext;
 
 		parent::__construct( $context );
 	}
@@ -77,7 +79,11 @@ class Data extends AbstractHelper{
         $html = <<<HTML
     <!-- Begin Pinterest {$event} -->
     <script type="text/javascript">
-        pintrk('track', '{$event}'{$json});
+        require(['jquery'], function($){
+            $(document).on('PinterestBaseCodeLoaded', function() {
+                pintrk('track', '{$event}', {$json});
+            });
+        });
     </script>
     <!-- End Pinterest {$event} -->
 HTML;
@@ -187,5 +193,9 @@ HTML;
         }
 
         return json_encode($itemData);
+    }
+    
+    public function isCustomerLoggedIn() {
+        return $this->_httpContext->getValue(\Magento\Customer\Model\Context::CONTEXT_AUTH);
     }
 }

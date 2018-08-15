@@ -22,12 +22,16 @@ $orderItemJson = $helper->getOrderItemsJson();
 ?>
 <!-- Pinterest Conversion Code for Conversions -->
 <script>
-    pintrk('track','checkout', {
-        value: <?php echo $grand_total ?>,
-        currency: '<?php echo $currency_code ?>',
-        order_quantity: <?php echo $qtyOrdered; ?>,
-        line_items: <?php echo $orderItemJson ?>
+require(['jquery'], function($){
+    $(document).on('PinterestBaseCodeLoaded', function(){
+        pintrk('track','checkout', {
+            value: <?php echo $grand_total ?>,
+            currency: '<?php echo $currency_code ?>',
+            order_quantity: <?php echo $qtyOrdered; ?>,
+            line_items: <?php echo $orderItemJson ?>
+        });
     });
+});
 </script>
 <noscript>
 <img height="1" width="1" style="display:none;" alt=""
