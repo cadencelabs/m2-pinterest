@@ -10,19 +10,5 @@
             <block class="Cadence\Pinterest\Block\AbstractBlock" name="cadence_pinterest_visitor" template="Cadence_Pinterest::cadence/pinterest/visitor.phtml"/>
             <block class="Cadence\Pinterest\Block\AbstractBlock" name="cadence_pinterest_events" template="Cadence_Pinterest::cadence/pinterest/events.phtml" />
         </referenceBlock>
-        <referenceBlock name="after.body.start">
-            <block class="Magento\Framework\View\Element\Template" name="cadence.pinterest.fpc" before="-"
-                   template="Cadence_Pinterest::cadence/pinterest/fpc.phtml">
-                <arguments>
-                    <argument name="jsLayout" xsi:type="array">
-                        <item name="components" xsi:type="array">
-                            <item name="cadencePinterestFpc" xsi:type="array">
-                                <item name="component" xsi:type="string">Cadence_Pinterest/js/view/cadence-pinterest-fpc</item>
-                            </item>
-                        </item>
-                    </argument>
-                </arguments>
-            </block>
-        </referenceBlock>
     </body>
 </page>

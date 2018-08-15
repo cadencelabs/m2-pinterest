@@ -5,15 +5,45 @@ if (!$helper->isVisitorPixelEnabled()) {
     return;
 }
 $id = $helper->getTagId();
+$customerIsLoggedIn = $helper->isCustomerLoggedIn();
 ?>
 <!-- Pinterest Tag Base Code -->
 <script type="text/javascript">
 !function(e){if(!window.pintrk){window.pintrk=function(){window.pintrk.queue.push(Array.prototype.slice.call(arguments))};var n=window.pintrk;n.queue=[],n.version="3.0";var t=document.createElement("script");t.async=!0,t.src=e;var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(t,r)}}("https://s.pinimg.com/ct/core.js");
+<?php if(!$customerIsLoggedIn): ?>
 pintrk('load', '<?php echo $id ?>');
 pintrk('page');
+<?php endif; ?>
 </script>
 <noscript>
-<img height="1" width="1" style="display:none;" alt=""
-src="https://ct.pinterest.com/v3/?tid=<?php echo $id ?>&noscript=1" />
+<img height="1" width="1" style="display:none;" alt="" src="https://ct.pinterest.com/v3/?tid=<?php echo $id ?>&noscript=1" />
 </noscript>
 <!-- End Pinterest Tag Base Code -->
+
+<?php if($customerIsLoggedIn): ?>
+<script type="text/javascript">
+require([
+    'jquery',
+    'Magento_Customer/js/customer-data',
+    'ko'
+], function($, customerData) {
+    $(document).ready(function(){
+        customerData.get('customer').subscribe(function(data){
+            pintrk('load', '<?php echo $id ?>', {
+                em: data.email,
+            });
+            pintrk('page');
+            $(document).trigger('PinterestBaseCodeLoaded');
+        });
+    });
+});
+</script>
+<?php else: ?>
+<script type="text/javascript">
+require(['jquery'], function($){
+    $(document).ready(function() {
+        $(document).trigger('PinterestBaseCodeLoaded');
+    });
+});
+</script>
+<?php endif; ?>
